@@ -7,20 +7,17 @@ import com.example.simple_mvp_example.github.NetworkSource
 import com.example.simple_mvp_example.github.UserGithubRepository
 import com.example.simple_mvp_example.network.NetworkApi
 import com.example.simple_mvp_example.network.NetworkClient
+import com.squareup.leakcanary.LeakCanary
 
 
 class GithubApplication : Application() {
 
-    lateinit var userGithubRepository: GithubContract.Repository
+    lateinit var appComponents: AppComponents
 
     override fun onCreate() {
         super.onCreate()
-
-        val networkClient = NetworkClient()
-        val networkApi = NetworkApi(networkClient)
-        val networkSource = NetworkSource(networkApi)
-        val userGithubInteractor = GithubInteractor(networkSource)
-        userGithubRepository = UserGithubRepository.getInstance(userGithubInteractor)
+        appComponents = AppComponents.getInstance()
+        LeakCanary.install(this)
     }
 
 }

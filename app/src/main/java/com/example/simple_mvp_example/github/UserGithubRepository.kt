@@ -7,21 +7,26 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
 
-class UserGithubRepository private constructor(private val githubInteractor: GithubContract.Interactor) :
+class UserGithubRepository(private val githubInteractor: GithubContract.Interactor) :
     GithubContract.Repository {
 
 
     companion object {
 
-        private var userGithubRepository: GithubContract.Repository? = null
+        var userGithubRepository: GithubContract.Repository? = null
+        private set
 
         @Synchronized
-        fun getInstance(githubInteractor: GithubContract.Interactor): GithubContract.Repository {
+        fun setup(githubInteractor: GithubContract.Interactor): GithubContract.Repository {
             if (userGithubRepository == null) {
                 userGithubRepository = UserGithubRepository(githubInteractor)
             }
 
             return userGithubRepository!!
+        }
+
+        fun getInstance() : GithubContract.Repository {
+            return userGithubRepository ?: throw Throwable("Uninitialized yet, call setup")
         }
     }
 
